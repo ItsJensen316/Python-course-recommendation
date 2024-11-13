@@ -70,6 +70,7 @@ data['Course Name'] = data['Course Name'].str.replace(',,',',')
 
 # Create a new dataframe and copy 'Course Name' column into it
 courseData = data[['Course Name']].copy()
+courseData['Link'] = data[['Link']]
 
 data['Duration'] = data['Duration'].astype(str)
 courseData['Tokens'] = data['Course Name']+data['About']+data['Prerequiste']+data['Industry support']
@@ -151,7 +152,8 @@ def recommend(course, n_recommendations=6):
 
     course_list = sorted(list(enumerate(distances)), reverse=True, key=lambda x: x[1])[1:n_recommendations + 1]
 
-    recommended_courses = [courseData.iloc[i[0]].CourseName for i in course_list]
+    recommended_courses = [[courseData.iloc[i[0]].CourseName, courseData.iloc[i[0]].Link] for i in course_list]
+    
 
     return recommended_courses
 
@@ -163,7 +165,7 @@ recommendations_list = []
 recommendations=[]
 
 for index, faculty_row in faculty_data.iterrows():
-    combined_info = f"{faculty_row['designation']} {faculty_row['department']} {faculty_row['specialization']}".strip()
+    combined_info = f"{faculty_row['designation']} {faculty_row['department']} {faculty_row['specialization']} {faculty_row['Certification']} {faculty_row['Language']} {faculty_row['Method']} {faculty_row['Projects']} {faculty_row['Technology']} {faculty_row['Tool']} {faculty_row['UpScaling']}".strip()
     recommended_courses = recommend(combined_info)
     recommendations.append(recommended_courses)
     recommendations_list.append({
@@ -180,7 +182,7 @@ recommendations_df.to_csv("faculty_recommendations.csv", index=False)
 print(recommendations)
 
 for index, faculty_row in faculty_data.iterrows():
-    combined_info = f"{faculty_row['designation']} {faculty_row['department']} {faculty_row['specialization']}".strip()
+    combined_info = f"{faculty_row['designation']} {faculty_row['department']} {faculty_row['specialization']} {faculty_row['Certification']} {faculty_row['Language']} {faculty_row['Method']} {faculty_row['Projects']} {faculty_row['Technology']} {faculty_row['Tool']} {faculty_row['UpScaling']}".strip()
     recommended_courses = recommendations[index]
     
     mycol.update_one(
